@@ -3,86 +3,141 @@ import Navbar from "../globalcomponents/navBar";
 import Header from "../globalcomponents/header";
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Typography, Card, CardContent, Grid } from "@mui/material";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { get, post } from "../../services/API";
 
-// Utility to generate random users
-const generateRandomUsers = (num = 20) => {
-  const names = ["Alice", "Bob", "Charlie", "David", "Eve", "Fiona", "George"];
-  const domains = ["example.com", "mail.com", "test.org"];
-  return Array.from({ length: num }, (_, i) => ({
-    id: i + 1,
-    name: names[Math.floor(Math.random() * names.length)],
-    email: `${names[Math.floor(Math.random() * names.length)].toLowerCase()}@${
-      domains[Math.floor(Math.random() * domains.length)]
-    }`,
-    phone: `+1-202-555-${Math.floor(1000 + Math.random() * 9000)}`,
-    status: Math.random() > 0.3,
-    created_at: new Date(
-      Date.now() - Math.floor(Math.random() * 10000000000)
-    ).toLocaleDateString(),
-    updated_at: new Date(
-      Date.now() - Math.floor(Math.random() * 5000000000)
-    ).toLocaleDateString(),
-  }));
-};
 
 export default function Dashboard() {
   const [navOpen, setNavOpen] = useState(true);
-  const [users, setUsers] = useState([]);
+  const [mealAllocations, setMealAllocations] = useState([]);
+  const [loading, setLoading] = useState(false);
 
+  // CSS styles as JS objects
+  const styles = {
+    container: {
+      display: "flex",
+      flexWrap: "nowrap",      // horizontal scroll
+      overflowX: "auto",       // horizontal scroll
+      overflowY: "auto",       // vertical scroll
+      padding: "10px",
+      gap: "10px",
+      maxHeight: "400px",
+      border: "1px solid #ccc",
+      borderRadius: "10px",
+      backgroundColor: "#f9f9f9",
+    },
+    card: {
+      minWidth: "250px",
+      flex: "0 0 auto",
+      padding: "15px",
+      borderRadius: "10px",
+      boxShadow: "0px 2px 8px rgba(0,0,0,0.2)",
+      transition: "transform 0.2s",
+    },
+    ordered: {
+      backgroundColor: "#d1ffd6", // greenish
+    },
+    otherStatus: {
+      backgroundColor: "#fff3d6", // yelloish
+    },
+  };
+
+
+  function getTodayDateString() {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  }
+  
   useEffect(() => {
-    setUsers(generateRandomUsers(25));
+    fetchMealAllocations();
   }, []);
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150 },
-    { field: "email", headerName: "Email", width: 200 },
-    { field: "phone", headerName: "Phone", width: 150 },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 120,
-      renderCell: (params) =>
-        params.value ? (
-          <span style={{ color: "green", fontWeight: "bold" }}>Active</span>
-        ) : (
-          <span style={{ color: "red", fontWeight: "bold" }}>Inactive</span>
-        ),
-    },
-    { field: "created_at", headerName: "Created At", width: 150 },
-    { field: "updated_at", headerName: "Updated At", width: 150 },
-  ];
+  const MealAllocationsCard = ({ mealAllocations }) => {
+    // Container that allows wrapping
+    const containerStyle = {
+      display: "flex",
+      flexWrap: "wrap",       // allow cards to wrap to next line
+      overflowY: "auto",      // vertical scroll if needed
+      gap: 10,
+      padding: 10,
+      maxHeight: 400,         // fixed container height
+      border: "1px solid #ccc",
+      borderRadius: 10,
+      backgroundColor: "#f9f9f9",
+    };
 
-  // Dashboard summary cards
-  const metrics = [
-    { label: "Total Users", value: users.length, color: "#4caf50" },
-    {
-      label: "Active Users",
-      value: users.filter((u) => u.status).length,
-      color: "#2196f3",
-    },
-    {
-      label: "Inactive Users",
-      value: users.filter((u) => !u.status).length,
-      color: "#f44336",
-    },
-    {
-      label: "New Users Today",
-      value: Math.floor(Math.random() * 10),
-      color: "#ff9800",
-    },
-  ];
+    // Card style
+    const cardStyle = (status) => ({
+      width: 250,            // fixed width
+      minHeight: 180,        // minimum height, grows with content
+      padding: 10,
+      borderRadius: 10,
+      boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+      backgroundColor: status === "Ordered" ? "#d1ffd6" : "#fff3d6",
+      fontSize: 12,
+      overflowWrap: "break-word", 
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "flex-start",
+    });
+
+    const nameStyle = { fontSize: 14, fontWeight: "bold", marginBottom: 5 };
+
+    return (
+      <div style={containerStyle}>
+        {mealAllocations.map((meal) => (
+          <div key={meal.id} style={cardStyle(meal.status)}>
+            <div style={nameStyle}>{meal.employee_name}</div>
+            <div>Company: {meal.company}</div>
+            <div>Section: {meal.section}</div>
+            <div>Date: {meal.date}</div>
+            <div>Meal Type: {meal.meal_type}</div>
+            <div>Pay Category: {meal.pay_category}</div>
+            <div>Status: {meal.status}</div>            
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+
+
+  async function fetchMealAllocations() {
+    setLoading(true);
+    try {
+        const today = getTodayDateString();
+
+        const res = await get(
+        `/mealallocations/getMealAllocations/${today}/${today}/NA/NA`
+        );
+
+        console.log("====>", res);
+
+        if (!res || res.length === 0) {
+          throw new Error("No data!");
+        }
+
+        console.log("===>", res)
+
+
+
+        setMealAllocations(res);
+    } catch (err) {
+        toast.error(`Failed to fetch section: ${err.message || err}`);
+        console.error(err);
+    } finally {
+        setLoading(false);
+    }
+  }
 
   return (
     <div style={{ display: "flex", width: "100%", height: "100vh", overflow: "hidden" }}>
       {/* Sidebar */}
       <Navbar navOpen={navOpen} setNavOpen={setNavOpen} />
-
       <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        {/* Header */}
-        <Header navOpen={navOpen} systemName="Asset Management System" />
-
-        {/* Main Content */}
+        <Header navOpen={navOpen} systemName="Meal Management System" />
+               {/* Main Content */}
         <main
           style={{
             flex: 1,
@@ -93,55 +148,18 @@ export default function Dashboard() {
             overflow: "auto",
           }}
         >
-          {/* Metrics Cards */}
-          <Grid container spacing={2} marginBottom={3}>
-            {metrics.map((metric, idx) => (
-              <Grid item xs={12} sm={6} md={3} key={idx}>
-                <Card
-                  sx={{
-                    borderLeft: `5px solid ${metric.color}`,
-                    backgroundColor: "#f9f9f9",
-                    height: "100px",
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "16px",
-                  }}
-                >
-                  <CardContent>
-                    <Typography variant="subtitle2" color="textSecondary">
-                      {metric.label}
-                    </Typography>
-                    <Typography variant="h5" fontWeight="bold" color={metric.color}>
-                      {metric.value}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+         
 
-          {/* Users Table */}
-          <div
-            style={{
-              height: 500,
-              width: "100%",
-              border: "1px solid #ccc",
-              borderRadius: "8px",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
-              backgroundColor: "#fff",
-            }}
-          >
-            <DataGrid
-              rows={users}
-              columns={columns}
-              pageSize={5}
-              rowsPerPageOptions={[5, 10, 20]}
-              checkboxSelection
-              disableSelectionOnClick
-            />
-          </div>
+          <h2>Meal Allocations</h2>
+          <MealAllocationsCard mealAllocations={mealAllocations} />
+          
+
+          
         </main>
       </div>
+      
+
+      <div>sds</div>
     </div>
   );
 }

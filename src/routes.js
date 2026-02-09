@@ -47,16 +47,13 @@ import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
-import Users from "layouts/users";
-import Roles from "layouts/roles";
-import MasterCategory from "layouts/mastercategory";
 import Entity from "layouts/entity";
-import Plant from "layouts/plant";
-import Department from "layouts/department";
-import UserList from "layouts/userlist";
-import Modules from "layouts/module";
-import ModuleRoles from "layouts/modulerole";
-import Designations from "layouts/designation";
+import MasterEmployee from "layouts/employee";
+import MasterCompany from "layouts/company";
+import MasterSection from "layouts/section";
+import MasterEmployeeCategory from "layouts/employeecategory";
+import MealAllocations from "layouts/mealallocations";
+import CreateMealAllocations from "layouts/createmealallocations";
 
 const routes = [
   {
@@ -67,92 +64,60 @@ const routes = [
     route: "/dashboard",
     component: <Dashboard />,
   },
-  //user - role -segment of the module
+
   {
     type: "collapse",
-    name: "Users",
-    key: "users",
+    name: "Employee",
+    key: "masteremployee",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/users",
-    component: <Users />,
-  },
-  {
-    type: "collapse",
-    name: "User List",
-    key: "userlist",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/userlist",
-    component: <UserList />,
-  },
-  {
-    type: "collapse",
-    name: "Roles",
-    key: "roles",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/roles",
-    component: <Roles/>,
-  },
-  {
-    type: "collapse",
-    name: "Entity",
-    key: "entity",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/entity",
-    component: <Entity/>,
-  },
-  {
-    type: "collapse",
-    name: "Plant",
-    key: "plant",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/plant",
-    component: <Plant/>,
-  },
-  {
-    type: "collapse",
-    name: "Department",
-    key: "department",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/department",
-    component: <Department/>,
+    route: "/masteremployee",
+    component: <MasterEmployee />,
   },
 
   {
     type: "collapse",
-    name: "Modules",
-    key: "modules",
+    name: "Company",
+    key: "mastercompany",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/modules",
-    component: <Modules/>,
-  },
-  {
-    type: "collapse",
-    name: "ModuleRoles",
-    key: "moduleroles",
-    icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/moduleroles",
-    component: <ModuleRoles/>,
+    route: "/mastercompany",
+    component: <MasterCompany />,
   },
 
   {
     type: "collapse",
-    name: "Designations",
-    key: "designations",
+    name: "Section",
+    key: "mastersection",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/designations",
-    component: <Designations/>,
+    route: "/mastersection",
+    component: <MasterSection />,
   },
-
-  //  masters part of the module
 
   {
     type: "collapse",
-    name: "MasterCategory",
-    key: "mastercategory",
+    name: "Section",
+    key: "masteremployeecategory",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/mastercategory",
-    component: <MasterCategory />,
+    route: "/masteremployeecategory",
+    component: <MasterEmployeeCategory />,
   },
+  {
+    type: "collapse",
+    name: "Section",
+    key: "mealallocations",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/mealallocations",
+    component: <MealAllocations />,
+  },
+
+  {
+    type: "collapse",
+    name: "Section",
+    key: "createmealallocations",
+    icon: <Icon fontSize="small">dashboard</Icon>,
+    route: "/createmealallocations",
+    component: <CreateMealAllocations />,
+  },
+
 
   {
     type: "collapse",

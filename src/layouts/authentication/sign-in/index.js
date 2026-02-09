@@ -60,14 +60,14 @@ function Basic() {
               color="white"
               sx={{ letterSpacing: "1px", marginTop:'30px' }}
             >
-              HELLO WORLD:)
+              Meal Management System
             </MDTypography>
             <MDTypography
               variant="subtitle1"
               color="white"
               sx={{ opacity: 0.8 }}
             >
-              Boring Application
+              
             </MDTypography>
 
             {/* Divider line */}

@@ -3,6 +3,7 @@ import { Home, Box, Users, ChevronDown, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Navbar({ navOpen, setNavOpen }) {
+  
   const [openParents, setOpenParents] = useState({}); // track open parent items
 
   const toggleParent = (label) => {
@@ -18,21 +19,19 @@ export default function Navbar({ navOpen, setNavOpen }) {
     {
       icon: <Box size={20} />,
       label: "Master",
-      children: [{ label: "Category Creation", href: "/mastercategory" }],
+      children: [
+        { label: "Employee", href: "/masteremployee" },
+        { label: "Company", href: "/mastercompany" },
+        { label: "Section", href: "/mastersection" },
+        { label: "Employee Category", href: "/masteremployeecategory" },
+      ],
     },
     {
-      icon: <Users size={20} />,
-      label: "Users",
+      icon: <Box size={20} />,
+      label: "Meal Allocations",
       children: [
-        { label: "User Creation", href: "/users" },
-        { label: "User List", href: "/userlist" },
-        { label: "Module Creation", href: "/modules" },
-        { label: "Role Creation", href: "/roles" },
-        { label: "Module Role Creation", href: "/moduleroles" },
-        { label: "Entity", href: "/entity" },
-        { label: "Plant", href: "/plant" },
-        { label: "Department", href: "/department" },
-        { label: "Designations", href: "/designations" },
+        { label: "Create Meal Allocations", href: "/createmealallocations" },
+        { label: "Meal Allocation Report", href: "/mealallocations" },
       ],
     },
   ];
@@ -161,6 +160,7 @@ export default function Navbar({ navOpen, setNavOpen }) {
       </ul>
     </aside>
   );
+
 }
 
 

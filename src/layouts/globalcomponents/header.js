@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom";
 
 export default function Header({
   navOpen,
-  username = "John Doe",
+  username = "Admin Portal",
   profilePic = headerIcon, // <-- use the imported image directly
   onLogout,
-  systemName = "Asset Management System"
+  systemName = "Meal Management System"
 }) {
   const navigate = useNavigate();
 
